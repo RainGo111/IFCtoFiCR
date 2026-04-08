@@ -1,0 +1,19 @@
+# IFC files (large binary)
+ifcs/*.ifc
+
+# LBD intermediate outputs (regenerable)
+lbd_outputs/*.ttl
+
+# FiCR outputs (regenerable)
+ficr_outputs/*.ttl
+
+# IFCtoLBD JAR (170MB+, download separately)
+*.jar
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
