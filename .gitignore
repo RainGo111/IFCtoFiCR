@@ -3,8 +3,7 @@ ifcs/
 
 # FiCR outputs, coverage reports, Protege catalogs and intermediate Stage A
 # dumps (all regenerable / session-local)
-ficr_outputs/*
-!ficr_outputs/.gitkeep
+ficr_outputs/
 *_lbd.ttl
 
 # IFCtoLBD JAR (170MB+, download separately)

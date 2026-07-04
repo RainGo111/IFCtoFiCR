@@ -17,8 +17,9 @@ instance data plus an `owl:imports <https://w3id.org/ficr>` header — no
 embedded schema declarations.
 
 > The previous two-stage pipeline (IFCtoLBD Java jar + `lbd_to_ficr_converter.py`,
-> old namespace `bam/ficr#`) and the golden baseline files it produced are
-> archived under [`archive/legacy_pipeline/`](archive/legacy_pipeline/README.md).
+> old namespace `bam/ficr#`) is archived under
+> [`archive/legacy_pipeline/`](archive/legacy_pipeline/README.md); the golden
+> baseline files it produced are preserved in git history.
 
 ## Setup
 
@@ -95,7 +96,8 @@ elements): its Stage A output matched the baseline LBD graph exactly
 output matched the baseline FiCR ABox after namespace normalisation, with
 every remaining difference classified as an expected migration or documented
 improvement (0 unexpected). The classification ledger is `CHANGELOG.md`; the
-baseline files live in `archive/legacy_pipeline/`.
+baseline files are preserved in git history (see
+`archive/legacy_pipeline/README.md`).
 
 ## Project structure
 
@@ -105,9 +107,9 @@ FiCR_ifcs/
 ├── FiCR_ontology/
 │   ├── ficr.ttl              # frozen FiCR TBox v1.1.0 (read-only, authoritative)
 │   └── bot.ttl               # BOT 0.3.2 (imported by FiCR)
-├── archive/legacy_pipeline/  # superseded two-stage pipeline + golden baseline files
+├── archive/legacy_pipeline/  # superseded two-stage pipeline
 ├── ifcs/                     # input IFC files (local only, not tracked)
-├── ficr_outputs/             # converted FiCR ABox files
+├── ficr_outputs/             # converted FiCR ABox files (local only, not tracked)
 ├── CHANGELOG.md              # intentional-deviations ledger
 └── README.md
 ```
@@ -119,10 +121,10 @@ FiCR_ifcs/
 | Duplex A (Architectural) | [buildingSMART Community Sample Files](https://github.com/buildingsmart-community/Community-Sample-Test-Files) |
 | Clinic Architectural | [buildingSMART Community Sample Files](https://github.com/buildingsmart-community/Community-Sample-Test-Files) |
 
-Duplex A (268 elements, ~2,600 output triples) is the golden baseline
-archived in `archive/legacy_pipeline/`; Clinic Architectural (3,196 entities,
-~31,400 output triples) exercises curtain walls, large member sets and live
-fire-rating values.
+Duplex A (268 elements, ~2,600 output triples) is the golden verification
+baseline (see `archive/legacy_pipeline/README.md`); Clinic Architectural
+(3,196 entities, ~31,400 output triples) exercises curtain walls, large
+member sets and live fire-rating values.
 
 ## Related Projects
 

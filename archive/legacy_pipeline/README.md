@@ -1,41 +1,30 @@
 # Legacy two-stage pipeline (archived)
 
-This directory preserves the original two-stage IFC-to-FiCR pipeline and the
-golden baseline files it produced. It has been **superseded by the
-single-tool `ifc_to_ficr` package** at the repository root.
+This directory preserves the stage-2 converter of the original two-stage
+IFC-to-FiCR pipeline, which has been **superseded by the single-tool
+`ifc_to_ficr` package** at the repository root.
 
 ## Contents
 
 | File | Role |
 | --- | --- |
-| `IFCtoLBD_CLI_2_44_4.jar` | Stage 1 — IFCtoLBD v2.44.4 (Java). Converted IFC2X3 STEP files into an LBD graph (BOT topology + beo:/props: product types and properties). |
-| `lbd_to_ficr_converter.py` | Stage 2 — mapped the LBD graph into a FiCR ABox under the old `https://w3id.org/bam/ficr#` namespace, against the pre-freeze TBox. |
-| `Duplex_A_20110907.ifc` | Golden baseline input — buildingSMART community sample model (IFC2X3). |
-| `Duplex_A_20110907.ttl` | Golden baseline stage-1 output (LBD graph) produced by the jar from the model above. |
-| `Duplex_A_20110907_ficr.ttl` | Golden baseline stage-2 output (old-namespace FiCR ABox) produced by `lbd_to_ficr_converter.py`. |
+| `lbd_to_ficr_converter.py` | Stage 2 — mapped an LBD graph into a FiCR ABox under the old `https://w3id.org/bam/ficr#` namespace, against the pre-freeze TBox. |
 
-## Why it is kept
+Stage 1 was [IFCtoLBD](https://github.com/jyrkioraskari/IFCtoLBD) v2.44.4
+(Java CLI jar, downloadable from its releases page), which converted IFC2X3
+STEP files into an LBD graph (BOT topology + beo:/props: product types and
+properties).
 
-The three `Duplex_A_20110907*` files were the **audit baseline** used to
-develop and verify `ifc_to_ficr`: its Stage A output was diffed byte-exact
-against the LBD file (0/0), and its final output against the FiCR ABox after
-namespace normalisation (79× MIG-01 + 2× MIG-02 + 1× IMP-01 classified
-diffs, 0 unexpected — see `CHANGELOG.md` at the repo root). The tool
-versions that generated the baseline are archived with it for
-reproducibility.
+## The golden baseline
 
-To reproduce stage 1 (requires Java 11+):
-
-```bash
-java -jar IFCtoLBD_CLI_2_44_4.jar Duplex_A_20110907.ifc -l 3
-```
-
-To reproduce stage 2 (requires Python 3.9+ with rdflib, and the pre-freeze
-TBox at `FiCR_ontology/ficr_tbox.ttl` relative to the working directory):
-
-```bash
-python lbd_to_ficr_converter.py Duplex_A_20110907.ttl Duplex_A_20110907_ficr.ttl
-```
+This pipeline produced the golden baseline files (`Duplex_A_20110907.ifc` /
+`.ttl` / `_ficr.ttl`) against which `ifc_to_ficr` was developed and verified:
+Stage A matched the baseline LBD graph exactly (0/0 diff) and the final
+output matched the baseline FiCR ABox after namespace normalisation with 0
+unexpected differences (see `CHANGELOG.md` at the repo root). The baseline
+data files were removed from the working tree on 2026-07-04 and remain
+recoverable from git history (commit `3e220c2`); the input model is the
+buildingSMART community sample "Duplex A (Architectural)".
 
 ## Status
 
