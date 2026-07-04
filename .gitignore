@@ -1,11 +1,11 @@
 # IFC files (large binary)
 ifcs/*.ifc
 
-# LBD intermediate outputs (regenerable)
-lbd_outputs/*.ttl
-
-# FiCR outputs (regenerable)
-ficr_outputs/*.ttl
+# FiCR outputs, coverage reports, Protege catalogs and intermediate Stage A
+# dumps (all regenerable / session-local)
+ficr_outputs/*
+!ficr_outputs/.gitkeep
+*_lbd.ttl
 
 # IFCtoLBD JAR (170MB+, download separately)
 *.jar
@@ -13,6 +13,9 @@ ficr_outputs/*.ttl
 # Python
 __pycache__/
 *.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
 
 # OS
 .DS_Store
