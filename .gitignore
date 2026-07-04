@@ -1,5 +1,5 @@
-# IFC files (large binary)
-ifcs/*.ifc
+# Input IFC models (large binaries, local only)
+ifcs/
 
 # FiCR outputs, coverage reports, Protege catalogs and intermediate Stage A
 # dumps (all regenerable / session-local)

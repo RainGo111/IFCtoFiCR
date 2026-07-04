@@ -106,7 +106,7 @@ FiCR_ifcs/
 │   ├── ficr.ttl              # frozen FiCR TBox v1.1.0 (read-only, authoritative)
 │   └── bot.ttl               # BOT 0.3.2 (imported by FiCR)
 ├── archive/legacy_pipeline/  # superseded two-stage pipeline + golden baseline files
-├── ifcs/                     # input IFC files
+├── ifcs/                     # input IFC files (local only, not tracked)
 ├── ficr_outputs/             # converted FiCR ABox files
 ├── CHANGELOG.md              # intentional-deviations ledger
 └── README.md
