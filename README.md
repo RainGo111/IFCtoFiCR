@@ -64,7 +64,11 @@ space adjacency and sub-element decomposition, types every element as an
 (IFC entity, PredefinedType) pair, and collects a curated property subset
 (dimensions, isExternal/loadBearing, OmniClass classification, fire rating).
 All version-sensitive knowledge lives in a per-schema profile
-(`profile_ifc2x3.py`).
+(`profile_ifc2x3.py`). The intermediate graph deliberately follows the
+**Linked Building Data (LBD) vocabularies and conventions** — BOT for
+topology, the BEO and PROPS namespaces and the instance-URI scheme
+established by IFCtoLBD — which keeps it comparable with the wider LBD
+ecosystem and with the outputs of the legacy pipeline.
 
 **Stage B — BOT graph → FiCR ABox**: maps element types and properties to
 FiCR terms, then infers the higher-level semantics: building/storey
@@ -97,7 +101,9 @@ IFCtoFiCR/
 - [FiCR Project Site](https://ficr-site.vercel.app/) — overview of the FiCR project
 - [FiCR Ontology](https://raingo111.github.io/FiCR-ontology/) — the FiCR ontology documentation
 - [FiCR Platform](https://github.com/RainGo111/FiCR) — full-stack fire compliance analysis platform (archived)
-- [IFCtoLBD](https://github.com/jyrkioraskari/IFCtoLBD) — IFC to Linked Building Data converter (upstream dependency of the archived legacy pipeline)
+- [BOT — Building Topology Ontology](https://w3id.org/bot) — the spatial-topology backbone of both the intermediate graph and FiCR itself
+- [W3C Linked Building Data Community Group](https://www.w3.org/community/lbd/) — origin of the LBD vocabularies (BOT, BEO, PROPS) this converter builds on
+- [IFCtoLBD](https://github.com/jyrkioraskari/IFCtoLBD) — IFC to Linked Building Data converter; the legacy pipeline's stage 1, whose LBD output conventions (vocabularies, instance-URI scheme) Stage A intentionally replicates
 - [buildingSMART Community Sample Test Files](https://github.com/buildingsmart-community/Community-Sample-Test-Files) — IFC test models used for validation
 
 ## License
