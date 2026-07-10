@@ -45,98 +45,58 @@ updated frequently). Before running the converter, place the current
 .venv\Scripts\python -m ifc_to_ficr convert ifcs/model.ifc --emit-intermediate
 ```
 
-Only **IFC2X3** is supported; other schemas exit with code 3 and a clear
-message. A coverage report (entities visited, converted per FiCR class,
-skipped with reasons, properties extracted vs missing) is printed after every
-run. Existing output files are never overwritten without `--force`.
+**IFC2X3** is currently the only supported schema (other schemas exit with
+code 3 and a clear message); support for further schemas such as IFC4 will
+be added incrementally as more diverse models are processed — the
+per-schema-profile architecture is designed for exactly that. A coverage
+report (entities visited, converted per FiCR class, skipped with reasons,
+properties extracted vs missing) is printed after every run. Existing output
+files are never overwritten without `--force`.
 
 Exit codes: `0` ok · `1` error · `2` usage · `3` unsupported schema ·
 `4` TBox validation failure.
 
 ## What the converter does
 
-**Stage A — IFC → in-memory BOT graph** (no geometry processing):
+**Stage A — IFC → in-memory BOT graph** (no geometry processing): extracts
+the spatial tree (`bot:Site/Building/Storey/Space`), element containment,
+space adjacency and sub-element decomposition, types every element as an
+(IFC entity, PredefinedType) pair, and collects a curated property subset
+(dimensions, isExternal/loadBearing, OmniClass classification, fire rating).
+All version-sensitive knowledge lives in a per-schema profile
+(`profile_ifc2x3.py`).
 
-- Spatial tree `bot:Site/Building/Storey/Space` + `bot:hasBuilding/hasStorey/hasSpace`
-  from `IfcRelAggregates`; `bot:containsElement` from
-  `IfcRelContainedInSpatialStructure` (plus placement-chain containment for
-  stair components); `bot:adjacentElement` from `IfcRelSpaceBoundary`;
-  `bot:hasSubElement` from element aggregation and
-  `IfcRelVoidsElement`/`IfcRelFillsElement` (wall→door, roof→window).
-- Element typing as (IFC entity, PredefinedType) pairs via the IFC2X3
-  schema profile (`profile_ifc2x3.py`).
-- The consumed property subset from Revit property sets (volume, length,
-  width, area, thickness, elevation, unbounded height, isExternal,
-  loadBearing, OmniClass category, category description, fire rating) plus
-  `GlobalId`/`ObjectType` attributes.
+**Stage B — BOT graph → FiCR ABox**: maps element types and properties to
+FiCR terms, then infers the higher-level semantics: building/storey
+classification and ordering, external walls, space classification via
+OmniClass codes with label fallback (`ficr:hasSpaceUsage`), space adjacency
+(`bot:adjacentZone` / `bot:intersectsZone`) and fire ratings
+(`ficr:hasActualREI`).
 
-**Stage B — BOT graph → FiCR ABox**:
-
-- Class mapping (IFC entity, PredefinedType) → FiCR classes
-  (`ficr:Wall`, `ficr:FloorSlab`, `ficr:Doorset`, …); unmapped element types
-  fall back to `bot:Element`.
-- Property mapping to `ficr:hasArea`, `ficr:hasThickness`, `ficr:isExternal`,
-  … (xsd:decimal at 3 decimals, xsd:boolean, xsd:string).
-- Post-conversion inference: Multi/SingleStoreyBuilding, Basement/
-  GroundAndAboveStorey + `isAboveGround`, `isStoreyAbove/Below`,
-  `ficr:ExternalWall`, space classification via OmniClass codes with label
-  fallback (`ficr:RoomSpace` + `ficr:hasSpaceUsage` …), space adjacency
-  (`bot:adjacentZone` / `bot:intersectsZone`), fire rating →
-  `ficr:hasActualREI`.
-
-**Safety gates**:
-
-- Schema gate (hard error) — only IFC2X3 input is accepted.
-- Term gate (hard error) — every emitted `ficr:`/`bot:` term must exist in
-  `FiCR_ontology/ficr.ttl` + `FiCR_ontology/bot.ttl`; all mapping targets
-  are validated at startup.
-- TBox fingerprint check (warning) — flags when `ficr.ttl` differs from the
-  pinned reference fingerprint in `tbox.py`, signalling that the ontology
-  has changed since the converter was last aligned with it.
-
-## Provenance and validation
-
-The converter was developed against a golden baseline produced by the
-archived legacy pipeline (Duplex A, buildingSMART community sample, 268
-elements): its Stage A output matched the baseline LBD graph exactly
-(0 missing / 0 extra triples across all consumed channels) and its final
-output matched the baseline FiCR ABox after namespace normalisation, with
-every remaining difference classified as an expected migration or documented
-improvement (0 unexpected). The classification ledger is `CHANGELOG.md`; the
-baseline files are preserved in git history (see
-`archive/legacy_pipeline/README.md`).
+**Safety gates**: schema gate and TBox term validation (mapping targets at
+startup, every emitted `ficr:`/`bot:` term at the end) are hard errors; a
+TBox fingerprint check warns when the ontology has changed since the
+converter was last aligned with it.
 
 ## Project structure
 
 ```text
 IFCtoFiCR/
-├── ifc_to_ficr/              # the converter package (CLI: python -m ifc_to_ficr)
-├── FiCR_ontology/            # (local only, not tracked)
-│   ├── ficr.ttl              # FiCR TBox (developed in the FiCR Ontology project)
-│   └── bot.ttl               # BOT 0.3.2 (imported by FiCR)
+├── ifc_to_ficr/              # converter package (CLI: python -m ifc_to_ficr)
+├── FiCR_ontology/            # ficr.ttl + bot.ttl (local only, not tracked)
 ├── archive/legacy_pipeline/  # superseded two-stage pipeline
-├── ifcs/                     # input IFC files (local only, not tracked)
+├── ifcs/                     # input IFC models (local only, not tracked)
 ├── ficr_outputs/             # converted FiCR ABox files (local only, not tracked)
-├── CHANGELOG.md              # intentional-deviations ledger
+├── pyproject.toml            # package metadata and dependencies
+├── CHANGELOG.md              # change ledger
 └── README.md
 ```
 
-## Tested IFC Models
-
-| Model | Source |
-| --- | --- |
-| Duplex A (Architectural) | [buildingSMART Community Sample Files](https://github.com/buildingsmart-community/Community-Sample-Test-Files) |
-| Clinic Architectural | [buildingSMART Community Sample Files](https://github.com/buildingsmart-community/Community-Sample-Test-Files) |
-
-Duplex A (268 elements, ~2,600 output triples) is the golden verification
-baseline (see `archive/legacy_pipeline/README.md`); Clinic Architectural
-(3,196 entities, ~31,400 output triples) exercises curtain walls, large
-member sets and live fire-rating values.
-
 ## Related Projects
 
+- [FiCR Project Site](https://ficr-site.vercel.app/) — overview of the FiCR project
 - [FiCR Ontology](https://raingo111.github.io/FiCR-ontology/) — the FiCR ontology documentation
-- [FiCR Platform](https://github.com/RainGo111/FiCR) — full-stack fire compliance analysis platform using the FiCR ontology
+- [FiCR Platform](https://github.com/RainGo111/FiCR) — full-stack fire compliance analysis platform (archived)
 - [IFCtoLBD](https://github.com/jyrkioraskari/IFCtoLBD) — IFC to Linked Building Data converter (upstream dependency of the archived legacy pipeline)
 - [buildingSMART Community Sample Test Files](https://github.com/buildingsmart-community/Community-Sample-Test-Files) — IFC test models used for validation
 
