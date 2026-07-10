@@ -94,7 +94,8 @@ def _cmd_convert(args) -> int:
 
     stage_b.add_ontology_header(final_graph, output_stem)
     output_path.write_text(
-        stage_b.serialize(final_graph, output_stem, input_path.name),
+        stage_b.serialize(final_graph, output_stem, input_path.name,
+                          validation.version),
         encoding="utf-8",
     )
     print(f"FiCR ABox written to {output_path} ({len(final_graph)} triples)")

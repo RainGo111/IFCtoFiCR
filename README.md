@@ -1,4 +1,4 @@
-# ifc2FiCR
+# IFCtoFiCR
 
 A single-tool converter from Industry Foundation Classes (IFC) building models
 to [FiCR ontology](https://w3id.org/ficr) instances (ABox), enabling semantic
@@ -10,8 +10,8 @@ IFC2X3 (.ifc)  ──►  ifc_to_ficr (Python)  ──►  FiCR ABox (.ttl)
                     Stage B: BOT graph → FiCR ABox
 ```
 
-The converter targets the **frozen FiCR TBox v1.1.0**
-(`FiCR_ontology/ficr.ttl`, namespace `https://w3id.org/ficr#`), which imports
+The converter targets the **FiCR TBox** (`FiCR_ontology/ficr.ttl`, namespace
+`https://w3id.org/ficr#`, currently v1.1.1), which imports
 [BOT](https://w3id.org/bot#) for spatial topology. Output files are pure ABox:
 instance data plus an `owl:imports <https://w3id.org/ficr>` header — no
 embedded schema declarations.
@@ -29,6 +29,11 @@ Python 3.10+; no Java required.
 python -m venv .venv
 .venv\Scripts\python -m pip install -e .        # installs ifcopenshell + rdflib
 ```
+
+`FiCR_ontology/` is not tracked in this repository (the ontology is developed
+in the [FiCR Ontology](https://raingo111.github.io/FiCR-ontology/) project and
+updated frequently). Before running the converter, place the current
+`ficr.ttl` and `bot.ttl` (BOT 0.3.2) under `FiCR_ontology/`.
 
 ## Usage
 
@@ -79,13 +84,15 @@ Exit codes: `0` ok · `1` error · `2` usage · `3` unsupported schema ·
   (`bot:adjacentZone` / `bot:intersectsZone`), fire rating →
   `ficr:hasActualREI`.
 
-**Safety gates** (all hard errors):
+**Safety gates**:
 
-- Schema gate — only IFC2X3 input is accepted.
-- TBox fingerprint gate — refuses to run against anything but the frozen
-  TBox v1.1.0 (triple/term counts hard-coded in `tbox.py`).
-- Term gate — every emitted `ficr:`/`bot:` term must exist in
-  `FiCR_ontology/ficr.ttl` + `FiCR_ontology/bot.ttl`.
+- Schema gate (hard error) — only IFC2X3 input is accepted.
+- Term gate (hard error) — every emitted `ficr:`/`bot:` term must exist in
+  `FiCR_ontology/ficr.ttl` + `FiCR_ontology/bot.ttl`; all mapping targets
+  are validated at startup.
+- TBox fingerprint check (warning) — flags when `ficr.ttl` differs from the
+  pinned reference fingerprint in `tbox.py`, signalling that the ontology
+  has changed since the converter was last aligned with it.
 
 ## Provenance and validation
 
@@ -102,10 +109,10 @@ baseline files are preserved in git history (see
 ## Project structure
 
 ```text
-FiCR_ifcs/
+IFCtoFiCR/
 ├── ifc_to_ficr/              # the converter package (CLI: python -m ifc_to_ficr)
-├── FiCR_ontology/
-│   ├── ficr.ttl              # frozen FiCR TBox v1.1.0 (read-only, authoritative)
+├── FiCR_ontology/            # (local only, not tracked)
+│   ├── ficr.ttl              # FiCR TBox (developed in the FiCR Ontology project)
 │   └── bot.ttl               # BOT 0.3.2 (imported by FiCR)
 ├── archive/legacy_pipeline/  # superseded two-stage pipeline
 ├── ifcs/                     # input IFC files (local only, not tracked)

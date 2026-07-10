@@ -5,6 +5,29 @@ two-stage pipeline (IFCtoLBD 2.44.4 + lbd_to_ficr_converter.py) and its golden
 output `golden/Duplex_A_20110907_ficr.ttl`. Rule ids (MIG-*/IMP-*) match the
 buckets in the classified diff report produced by `ifc-to-ficr verify`.
 
+## 1.2.2 — 2026-07-10
+
+### Changed
+
+- **TBox updated to v1.1.1 by the maintainer** (5 unused properties removed:
+  3 object, 2 datatype). All terms emitted by the converter remain present —
+  no conversion behaviour change (Duplex output identical: 2,606 triples).
+- **Fingerprint gate relaxed to a warning.** The TBox is under active
+  development, so a fingerprint mismatch now logs a WARNING instead of
+  aborting; the pinned reference was refreshed to v1.1.1
+  (2098/241/62/40/96). Output safety continues to rely on the hard gates:
+  startup mapping-target validation and the emitted-term check.
+- Output header now reports the TBox version read dynamically from
+  `owl:versionInfo` instead of a hard-coded string.
+
+### Repository
+
+- `FiCR_ontology/` is no longer tracked (added to `.gitignore`): the
+  ontology is developed in the FiCR Ontology project and updated frequently;
+  users must place `ficr.ttl` + `bot.ttl` there locally (see README).
+- GitHub repository renamed `ifc2FiCR` -> `IFCtoFiCR`; local remote URL
+  updated.
+
 ## 1.2.1 — 2026-07-04
 
 ### Fixed

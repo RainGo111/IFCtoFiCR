@@ -2,7 +2,7 @@
 
 Replaces the two-stage IFCtoLBD (Java) + lbd_to_ficr_converter.py pipeline.
 Stage A extracts a BOT-conformant graph from the IFC; Stage B maps it to a
-FiCR ABox conformant to the frozen TBox (https://w3id.org/ficr#, v1.1.0).
+FiCR ABox conformant to the FiCR TBox (https://w3id.org/ficr#).
 """
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"

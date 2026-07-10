@@ -1,6 +1,10 @@
 # Input IFC models (large binaries, local only)
 ifcs/
 
+# Ontology files (developed in the FiCR Ontology project; local only,
+# updated frequently — not tracked here)
+FiCR_ontology/
+
 # FiCR outputs, coverage reports, Protege catalogs and intermediate Stage A
 # dumps (all regenerable / session-local)
 ficr_outputs/

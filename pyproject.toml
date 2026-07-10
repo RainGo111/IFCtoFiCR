@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ifc-to-ficr"
-version = "1.2.1"
+version = "1.2.2"
 description = "Single-tool IFC (IFC2X3) to FiCR RDF ABox converter"
 requires-python = ">=3.10"
 dependencies = [

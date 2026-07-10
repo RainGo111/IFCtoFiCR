@@ -30,5 +30,5 @@ buildingSMART community sample "Duplex A (Architectural)".
 
 Superseded. Do not use for new conversions — use the `ifc_to_ficr` CLI
 instead (see the repository README). The old namespace `bam/ficr#` and the
-inline schema-stub output of stage 2 are retired; the current frozen TBox is
-`FiCR_ontology/ficr.ttl` (`https://w3id.org/ficr#`, v1.1.0).
+inline schema-stub output of stage 2 are retired; the current FiCR TBox is
+`FiCR_ontology/ficr.ttl` (`https://w3id.org/ficr#`).
